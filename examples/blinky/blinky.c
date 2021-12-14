@@ -21,7 +21,19 @@
     #define LED_PORT_CLK_ENABLE     __HAL_RCC_GPIOD_CLK_ENABLE
 #endif
 
-void SysTick_Handler(void)
+// static functions
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+static void SysTick_Handler(void);
+static void initGPIO(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+static void SysTick_Handler(void)
 {
     HAL_IncTick();
 
@@ -30,7 +42,7 @@ void SysTick_Handler(void)
         HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
 }
 
-void initGPIO()
+static void initGPIO(void)
 {
     GPIO_InitTypeDef GPIO_Config;
 
