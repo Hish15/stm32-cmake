@@ -9,9 +9,6 @@ env:
 jobs:
   test-ubuntu:
     runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        family: [F0, F1, F2, F3, F4, F7, G0, G4, H7, L0, L1, L4, L5, U5, WB, WL, MP1]
 
     steps:
     - uses: actions/checkout@v2
@@ -19,14 +16,19 @@ jobs:
     - name: Install ARM toolchain
       run: sudo apt-get install gcc-arm-none-eabi binutils-arm-none-eabi 
 
-    - name: Tests family ${{matrix.family}}
+    - name: Tests all families
       run: |
-          for MODULE in fetch hal cmsis; do
-              if [[ ${{matrix.family}} -eq MP1 ]] && [[ $MODULE -eq cmsis ]]; then
-                continue
-              fi
+          for FAMILY in F0 F1 F2 F3 F4 F7 G0 G4 H7 L0 L1 L4 L5 U5 WB WL MP1; do
+              for MODULE in fetch hal cmsis; do
+                  if [[ $FAMILY == MP1 ]] && [[ $MODULE == cmsis ]]; then
+                    echo "Skipping module $MODULE on family $FAMILY"
+                    continue
+                  fi
 
-              cd "$GITHUB_WORKSPACE/test/$MODULE"
-              cmake -DTEST_FAMILIES=${{ matrix.family }} -DFETCH_ST_SOURCES=TRUE -B build --log-level=TRACE
-              cmake --build build --config $BUILD_TYPE --
+                  echo "Testing module $MODULE on family $FAMILY"
+
+                  cd "$GITHUB_WORKSPACE/tests/$MODULE"
+                  cmake -DTEST_FAMILIES=$FAMILY -DFETCH_ST_SOURCES=TRUE -B "build_$FAMILY" --log-level=TRACE
+                  cmake --build "build_$FAMILY"  --config $BUILD_TYPE --
+              done
           done
