@@ -21,7 +21,7 @@ jobs:
 
     - name: Tests family ${{matrix.family}}
       run: |
-          for MODULE in 'fetch hal cmsis'; do
+          for MODULE in fetch hal cmsis; do
               if [[${{matrix.family}} -eq MP1]] && [[$MODULE -eq cmsis]]; then
                 continue
               fi
