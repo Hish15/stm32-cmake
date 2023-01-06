@@ -19,22 +19,14 @@ jobs:
     - name: Install ARM toolchain
       run: sudo apt-get install gcc-arm-none-eabi binutils-arm-none-eabi 
 
-    - name: Test fetch
-      working-directory: $GITHUB_WORKSPACE/tests/fetch
+    - name: Tests family ${{matrix.family}}
       run: |
-          cmake -DTEST_FAMILIES=${{ matrix.family }} -B build --log-level=TRACE
-          cmake --build build --config $BUILD_TYPE --
+          for MODULE in 'fetch hal cmsis'; do
+              if [[${{matrix.family}} -eq MP1]] && [[$MODULE -eq cmsis]]; then
+                continue
+              fi
 
-    - name: Test HAL
-      working-directory: $GITHUB_WORKSPACE/tests/hal
-      run: |
-          cmake -DTEST_FAMILIES=${{ matrix.family }} -DFETCH_ST_SOURCES=TRUE -B build --log-level=TRACE
-          cmake --build build --config $BUILD_TYPE --
-
-
-    - name: Test CMSIS
-      working-directory: $GITHUB_WORKSPACE/tests/cmsis
-      if: ${{ matrix.family != 'MP1' }}
-      run: |
-          cmake -DTEST_FAMILIES=${{ matrix.family }} -DFETCH_ST_SOURCES=TRUE -B build --log-level=TRACE
-          cmake --build build --config $BUILD_TYPE --
+              cd "$GITHUB_WORKSPACE/test/$MODULE"
+              cmake -DTEST_FAMILIES=${{ matrix.family }} -DFETCH_ST_SOURCES=TRUE -B build --log-level=TRACE
+              cmake --build build --config $BUILD_TYPE --
+          done
