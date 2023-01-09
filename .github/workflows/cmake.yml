@@ -10,7 +10,7 @@ jobs:
   test-ubuntu:
     runs-on: ubuntu-20.04
     container:
-      image: stronglytyped/arm-none-eabi-gcc@sha256:0a5cf4a7122848d8e1b677695f0ae16891d76a018b82cb855cc6983e3feb7d07
+      image: hish15/stm32cmake
     defaults:
       run:
         shell: bash
