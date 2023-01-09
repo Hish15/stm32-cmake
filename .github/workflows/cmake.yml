@@ -25,8 +25,7 @@ jobs:
 
     - name: Configure tests/fetch
       shell: bash
-      working-directory: ${{runner.workspace}}/tests/fetch/build
-      run: cmake -DTEST_FAMILIES=${{ matrix.family }} $GITHUB_WORKSPACE/tests/fetch/
+      run: cmake -DTEST_FAMILIES=${{ matrix.family }} -S $GITHUB_WORKSPACE/tests/fetch/ -B ${{runner.workspace}}/tests/fetch/build
 
     - name: Build tests/fetch
       working-directory: ${{runner.workspace}}/tests/fetch/build
