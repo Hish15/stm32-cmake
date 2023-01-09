@@ -11,9 +11,6 @@ jobs:
     runs-on: ubuntu-20.04
     container:
       image: hish15/stm32cmake
-    defaults:
-      run:
-        shell: bash
 
     strategy:
       matrix:
